@@ -1,4 +1,4 @@
-""" class text node """
+""" class TextNode """
 
 class TextNode:
     """ represents node of text """

@@ -1,4 +1,4 @@
-""" test textnode """
+""" test TextNode """
 import unittest
 
 from textnode import TextNode
