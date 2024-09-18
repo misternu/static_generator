@@ -1,5 +1,14 @@
 """ TextNode and helpers """
+import types
 from htmlnode import LeafNode
+
+node_types = types.SimpleNamespace()
+node_types.TEXT = "text"
+node_types.BOLD = "bold"
+node_types.ITALIC = "italic"
+node_types.CODE = "code"
+node_types.LINK = "link"
+node_types.IMAGE = "image"
 
 class TextNode:
     """ represents node of text """
@@ -21,15 +30,15 @@ class TextNode:
 def text_node_to_html_node(text_node):
     """ convert text node to html node """
     match text_node.text_type:
-        case 'text':
+        case node_types.TEXT:
             return LeafNode(None, text_node.text)
-        case 'bold':
+        case node_types.BOLD:
             return LeafNode('b', text_node.text)
-        case 'italic':
+        case node_types.ITALIC:
             return LeafNode('i', text_node.text)
-        case 'code':
+        case node_types.CODE:
             return LeafNode('code', text_node.text)
-        case 'link':
+        case node_types.LINK:
             return LeafNode('a', text_node.text, { 'href': text_node.url })
-        case 'image':
+        case node_types.IMAGE:
             return LeafNode('img', '', { 'src': text_node.url, 'alt': text_node.text })
