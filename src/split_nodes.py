@@ -1,4 +1,5 @@
 """ split delimiter """
+import re
 from textnode import TextNode
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
@@ -25,3 +26,57 @@ def split_node_delimiter(old_node, delimiter, text_type):
         else:
             result.append(TextNode(text, text_type))
     return result
+
+def split_nodes_link(nodes):
+    """ return a new list of nodes with the links extracted """
+    result = []
+    for node in nodes:
+        if node.text_type != 'text':
+            result.append(node)
+            continue
+        result.extend(split_node_link(node))
+    return result
+
+def split_node_link(node):
+    """ return a list of nodes separating text and links """
+    split_text = re.split(r"(?<!!)\[[^\]]*\]\([^\)]*\)", node.text)
+    link_tuples = extract_markdown_links(node.text)
+    result = []
+    for i in range(len(split_text)-1):
+        result.append(TextNode(split_text[i], 'text'))
+        result.append(TextNode(link_tuples[i][0], 'link', link_tuples[i][1]))
+    if split_text[-1] != '':
+        result.append(split_text[-1])
+    return result
+
+def split_nodes_image(nodes):
+    """ return a new list of nodes with the images extracted """
+    result = []
+    for node in nodes:
+        if node.text_type != 'text':
+            result.append(node)
+            continue
+        result.extend(split_node_image(node))
+    return result
+
+def split_node_image(node):
+    """ return a list of nodes separating text and images """
+    split_text = re.split(r"!\[[^\]]*\]\([^\)]*\)", node.text)
+    image_tuples = extract_markdown_images(node.text)
+    result = []
+    for i in range(len(split_text)-1):
+        result.append(TextNode(split_text[i], 'text'))
+        result.append(TextNode(image_tuples[i][0], 'image', image_tuples[i][1]))
+    if split_text[-1] != '':
+        result.append(split_text[-1])
+    return result
+
+def extract_markdown_images(text):
+    """ return list of tuples of images """
+    regex = r"!\[([^\]]*)\]\(([^\)]*)\)"
+    return re.findall(regex, text)
+
+def extract_markdown_links(text):
+    """ return list of tuples of links """
+    regex = r"(?<!!)\[([^\]]*)\]\(([^\)]*)\)"
+    return re.findall(regex, text)
