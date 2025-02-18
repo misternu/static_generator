@@ -46,7 +46,7 @@ def split_node_link(node):
         result.append(TextNode(split_text[i], 'text'))
         result.append(TextNode(link_tuples[i][0], 'link', link_tuples[i][1]))
     if split_text[-1] != '':
-        result.append(split_text[-1])
+        result.append(TextNode(split_text[-1], 'text'))
     return result
 
 def split_nodes_image(nodes):
@@ -68,7 +68,7 @@ def split_node_image(node):
         result.append(TextNode(split_text[i], 'text'))
         result.append(TextNode(image_tuples[i][0], 'image', image_tuples[i][1]))
     if split_text[-1] != '':
-        result.append(split_text[-1])
+        result.append(TextNode(split_text[-1], 'text'))
     return result
 
 def extract_markdown_images(text):
@@ -80,3 +80,13 @@ def extract_markdown_links(text):
     """ return list of tuples of links """
     regex = r"(?<!!)\[([^\]]*)\]\(([^\)]*)\)"
     return re.findall(regex, text)
+
+def text_to_textnodes(text):
+    """ return textnodes for raw markdown string """
+    result = [TextNode(text, 'text')]
+    result = split_nodes_delimiter(result, "**", 'bold')
+    result = split_nodes_delimiter(result, "*", 'italic')
+    result = split_nodes_delimiter(result, "`", 'code')
+    result = split_nodes_image(result)
+    result = split_nodes_link(result)
+    return result

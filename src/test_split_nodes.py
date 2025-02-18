@@ -6,7 +6,8 @@ from split_nodes import (
     extract_markdown_links,
     split_nodes_delimiter,
     split_nodes_link,
-    split_nodes_image
+    split_nodes_image,
+    text_to_textnodes
 )
 from textnode import (
     TextNode,
@@ -17,6 +18,8 @@ TEXT_1 = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) " \
          "and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
 TEXT_2 = "This is text with a link [to boot dev](https://www.boot.dev) and " \
          "[to youtube](https://www.youtube.com/@bootdotdev)"
+TEXT_3 = "This is **text** with an *italic* word and a `code block` and an " \
+         "![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
 
 class TestInlineMarkdown(unittest.TestCase):
     """ test parsing of inline delimiters """
@@ -161,6 +164,25 @@ class TestInlineMarkdown(unittest.TestCase):
                 TextNode("to boot dev", node_types.LINK, "https://www.boot.dev"),
                 TextNode(" and ", node_types.TEXT),
                 TextNode("to youtube", node_types.LINK, "https://www.youtube.com/@bootdotdev")
+            ],
+            result,
+        )
+
+    def test_text_to_textnodes(self):
+        """ test function that outputs complex result from text """
+        result = text_to_textnodes(TEXT_3)
+        self.assertEqual(
+            [
+                TextNode("This is ", node_types.TEXT),
+                TextNode("text", node_types.BOLD),
+                TextNode(" with an ", node_types.TEXT),
+                TextNode("italic", node_types.ITALIC),
+                TextNode(" word and a ", node_types.TEXT),
+                TextNode("code block", node_types.CODE),
+                TextNode(" and an ", node_types.TEXT),
+                TextNode("obi wan image", node_types.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode(" and a ", node_types.TEXT),
+                TextNode("link", node_types.LINK, "https://boot.dev"),
             ],
             result,
         )
