@@ -7,11 +7,12 @@ from split_nodes import (
     split_nodes_delimiter,
     split_nodes_link,
     split_nodes_image,
-    text_to_textnodes
+    text_to_textnodes,
+    markdown_to_blocks,
 )
 from textnode import (
     TextNode,
-    node_types
+    node_types,
 )
 
 TEXT_1 = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) " \
@@ -20,6 +21,15 @@ TEXT_2 = "This is text with a link [to boot dev](https://www.boot.dev) and " \
          "[to youtube](https://www.youtube.com/@bootdotdev)"
 TEXT_3 = "This is **text** with an *italic* word and a `code block` and an " \
          "![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+TEXT_4 = """
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+"""
 
 class TestInlineMarkdown(unittest.TestCase):
     """ test parsing of inline delimiters """
@@ -185,6 +195,19 @@ class TestInlineMarkdown(unittest.TestCase):
                 TextNode("link", node_types.LINK, "https://boot.dev"),
             ],
             result,
+        )
+
+    def test_markdown_to_blocks(self):
+        """ test function that makes array of strings from markdown string """
+        blocks = markdown_to_blocks(TEXT_4)
+        self.assertEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with _italic_ text and `code` here\n" \
+                "This is the same paragraph on a new line",
+                "- This is a list\n- with items",
+            ],
         )
 
 

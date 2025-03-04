@@ -90,3 +90,10 @@ def text_to_textnodes(text):
     result = split_nodes_image(result)
     result = split_nodes_link(result)
     return result
+
+def markdown_to_blocks(markdown):
+    """ takes a markdown formatted string and returns blocks of text """
+    strings = markdown.split("\n\n")
+    strings = list(map(str.strip, strings))
+    strings = list(filter(lambda block: not len(block) == 0, strings))
+    return strings
