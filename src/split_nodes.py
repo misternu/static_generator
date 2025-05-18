@@ -85,7 +85,7 @@ def text_to_textnodes(text):
     """ return textnodes for raw markdown string """
     result = [TextNode(text, 'text')]
     result = split_nodes_delimiter(result, "**", 'bold')
-    result = split_nodes_delimiter(result, "*", 'italic')
+    result = split_nodes_delimiter(result, "_", 'italic')
     result = split_nodes_delimiter(result, "`", 'code')
     result = split_nodes_image(result)
     result = split_nodes_link(result)
