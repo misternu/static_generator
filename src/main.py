@@ -1,10 +1,10 @@
 """ main """
-
-from textnode import TextNode
+from copystatic import copy_static_to_public
 
 def main():
     """ static site generator """
-    node = TextNode("This is a text node", "bold", "https://www.boot.dev")
-    print(node)
+    print("overwriting public file from static folder...")
+    copy_static_to_public()
 
-main()
+if __name__ == "__main__":
+    main()
