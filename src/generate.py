@@ -1,5 +1,7 @@
 """ generate titles and pages """
 
+import os
+import shutil
 import re
 from markdown_blocks import markdown_to_blocks, markdown_to_html_node
 
@@ -28,3 +30,33 @@ def generate_page(from_path, template_path, dest_path):
 
     with open(dest_path, mode="w", encoding="utf8") as file:
         file.write(template)
+
+def generate_page_recursive(dir_path_content, dest_dir_path, template_path="template.html"):
+    """ recursively generate pages from content """
+    if not os.path.exists(dest_dir_path):
+        os.mkdir(dest_dir_path)
+    for filename in os.listdir(dir_path_content):
+        from_path = os.path.join(dir_path_content, filename)
+        dest_path = os.path.join(dest_dir_path, filename)
+        if os.path.isfile(from_path):
+            dest_path = dest_path.replace("md", "html")
+            generate_page(from_path, template_path, dest_path)
+        else:
+            generate_page_recursive(from_path, dest_path)
+
+
+# import shutil
+# import os
+
+# def copy_static_to_public():
+#     """ copy static files to public folder """
+#     if os.path.exists('public'):
+#         shutil.rmtree('public')
+#     os.mkdir('./public')
+#     for root, _, files in os.walk('static'):
+#         rel_path = os.path.relpath(root, 'static')
+#         dest_path = os.path.join('public', rel_path)
+#         os.makedirs(dest_path, exist_ok=True)
+
+#         for file in files:
+#             shutil.copy(os.path.join(root, file), os.path.join(dest_path, file))
