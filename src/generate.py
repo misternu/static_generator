@@ -13,7 +13,7 @@ def extract_title(markdown):
             return block[2:]
     raise ValueError("Markdown does not have a title")
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, dest_path, basepath, template_path):
     """ generate page from content """
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
@@ -27,11 +27,13 @@ def generate_page(from_path, template_path, dest_path):
     title = extract_title(content)
     template = template.replace("{{ Title }}", title)
     template = template.replace("{{ Content }}", html)
+    template = template.replace('href="/', f'href="{basepath}')
+    template = template.replace('src="/', f'src="{basepath}')
 
     with open(dest_path, mode="w", encoding="utf8") as file:
         file.write(template)
 
-def generate_page_recursive(dir_path_content, dest_dir_path, template_path="template.html"):
+def generate_page_recursive(dir_path_content, dest_dir_path, basepath, template_path="template.html"):
     """ recursively generate pages from content """
     if not os.path.exists(dest_dir_path):
         os.mkdir(dest_dir_path)
@@ -40,9 +42,9 @@ def generate_page_recursive(dir_path_content, dest_dir_path, template_path="temp
         dest_path = os.path.join(dest_dir_path, filename)
         if os.path.isfile(from_path):
             dest_path = dest_path.replace("md", "html")
-            generate_page(from_path, template_path, dest_path)
+            generate_page(from_path, dest_path, basepath, template_path)
         else:
-            generate_page_recursive(from_path, dest_path)
+            generate_page_recursive(from_path, dest_path, basepath, template_path)
 
 
 # import shutil

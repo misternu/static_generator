@@ -1,5 +1,5 @@
 __pycache__/
-public/
+docs/
 venv
 .sublime-project
 .DS_Store
